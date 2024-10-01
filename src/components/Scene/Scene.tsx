@@ -39,10 +39,10 @@ export const Scene: React.FC<SceneProps> = ({ maxMove, teleportSpeed }) => {
 
 			const [nextPosition, ...remainingPositions] = positions;
 			setCubePosition(nextPosition);
-			updateCameraPosition(nextPosition); // Mettre à jour la position de la caméra
-			setTimeout(() => teleportCube(remainingPositions), 80); // Ajout d'un délai pour chaque téléportation
+			updateCameraPosition(nextPosition);
+			setTimeout(() => teleportCube(remainingPositions), teleportSpeed); // Utilisation de teleportSpeed ici
 		},
-		[updateCameraPosition]
+		[updateCameraPosition, teleportSpeed] // Ajout de teleportSpeed comme dépendance
 	);
 
 	const handleKeyDown = useCallback(
@@ -121,8 +121,16 @@ export const Scene: React.FC<SceneProps> = ({ maxMove, teleportSpeed }) => {
 		<>
 			<Lights />
 			<Floor />
-			cubePosition={cubePosition}
-			previewPositions={previewPositions}
+			<mesh position={cubePosition}>
+				<boxGeometry args={[1, 1, 1]} />
+				<meshStandardMaterial color="red" />
+			</mesh>
+			{previewPositions.map((position, index) => (
+				<mesh key={index} position={position}>
+					<boxGeometry args={[1, 1, 1]} />
+					<meshStandardMaterial color="blue" opacity={0.5} transparent />
+				</mesh>
+			))}
 		</>
 	);
 };
